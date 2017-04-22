@@ -1,0 +1,244 @@
+<html><head></head><body><div class="apidocDiv">
+<style>
+/*csslint
+*/
+.apidocDiv {
+    background: #fff;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.apidocDiv a[href] {
+    color: #33f;
+    font-weight: bold;
+    text-decoration: none;
+}
+.apidocDiv a[href]:hover {
+    text-decoration: underline;
+}
+.apidocCodeCommentSpan {
+    background: #bbf;
+    color: #000;
+    display: block;
+}
+.apidocCodeKeywordSpan {
+    color: #d00;
+    font-weight: bold;
+}
+.apidocCodePre {
+    background: #eef;
+    border: 1px solid;
+    color: #777;
+    padding: 5px;
+    white-space: pre-wrap;
+}
+.apidocFooterDiv {
+    margin-top: 20px;
+    text-align: center;
+}
+.apidocModuleLi {
+    margin-top: 10px;
+}
+.apidocSectionDiv {
+    border-top: 1px solid;
+    margin-top: 20px;
+}
+.apidocSignatureSpan {
+    color: #777;
+    font-weight: bold;
+}
+</style>
+<h1>api documentation for
+    <a href="https://github.com/sjwilliams/grunt-responsive-videos">grunt-responsive-videos (v0.1.3)</a>
+</h1>
+<h4>Generate multiple video encodes at varying sizes for responsive, HTML5 video applications</h4>
+<div class="apidocSectionDiv"><a href="#apidoc.tableOfContents" id="apidoc.tableOfContents"><h1>table of contents</h1></a><ol>
+
+    <li class="apidocModuleLi"><a href="#apidoc.module.grunt-responsive-videos">module grunt-responsive-videos</a><ol>
+
+        <li>
+
+            <a class="apidocElementLiA" href="#apidoc.element.grunt-responsive-videos.grunt-responsive-videos">
+            function <span class="apidocSignatureSpan"></span>grunt-responsive-videos
+            <span class="apidocSignatureSpan">(grunt)</span>
+            </a>
+
+        </li>
+
+    </ol></li>
+
+</ol></div>
+
+<div class="apidocSectionDiv">
+<h1><a href="#apidoc.module.grunt-responsive-videos" id="apidoc.module.grunt-responsive-videos">module grunt-responsive-videos</a></h1>
+
+
+    <h2>
+        <a href="#apidoc.element.grunt-responsive-videos.grunt-responsive-videos" id="apidoc.element.grunt-responsive-videos.grunt-responsive-videos">
+        function <span class="apidocSignatureSpan"></span>grunt-responsive-videos
+        <span class="apidocSignatureSpan">(grunt)</span>
+        </a>
+    </h2>
+    <ul>
+    <li>description and source-code<pre class="apidocCodePre">grunt-responsive-videos = function (grunt) {
+
+  // Project configuration.
+  grunt.initConfig({
+    jshint: {
+      all: [
+        'Gruntfile.js',
+        'tasks/*.js',
+        '&lt;%= nodeunit.tests %&gt;',
+      ],
+      options: {
+        jshintrc: '.jshintrc',
+      },
+    },
+
+    // Before generating any new files, remove any previously-created files.
+    clean: {
+      tests: ['tmp'],
+    },
+
+    // Configuration to be run (and then tested).
+    responsive_videos: {
+      default_options: {
+        options: {
+        },
+        files: {
+          'tmp/default_options/big_buck_bunny.mov': 'test/assets/big_buck_bunny.mov',
+        },
+      },
+      custom_options: {
+        options: {
+          sizes: [{
+            width: 240,
+            poster: true
+          }],
+          encodes:[{
+            webm: [
+              {'-vcodec': 'libvpx'},
+              {'-acodec': 'libvorbis'},
+              {'-crf': '15'},
+              {'-q:a': '80'}
+            ]
+          }]
+        },
+        files: [{
+          expand: true,
+          src: ['**.{mp4,mov}'],
+          cwd: 'test/assets/',
+          dest: 'tmp/custom_options/'
+        }],
+      },
+      filter_options: {
+        options: {
+          sizes:[{
+            width: 640,
+            name: 'filtered',
+            filter: 'scale=640:trunc(ow/a/2)*2,crop=360:360:140:0',
+            poster: true
+          }],
+          encodes:[{
+            mp4: [
+              {'-vcodec':'libx264'},
+              {'-acodec': 'libfaac'},
+              {'-pix_fmt': 'yuv420p'},
+              {'-q:v': '4'},
+              {'-q:a': '100'},
+              {'-threads': '0'}
+            ]
+          }]
+        },
+        files: [{
+          expand: true,
+          src: ['cappadocia.mp4'],
+          cwd: 'test/assets/',
+          dest: 'tmp/filter_options/'
+        }],
+      },
+      poster_options: {
+        options: {
+          sizes: [{
+            width: 200,
+            name: 'poster_boolean',
+            poster: true
+          },{
+            width: 200,
+            name: 'poster_object_fastseek',
+            poster: {
+              fastseek: '1'
+            }
+          },{
+            width: 200,
+            name: 'poster_string_fastseek',
+            poster: {
+              fastseek: '1'
+            }
+          },{
+            width: 200,
+            name: 'poster_object_accurateseek',
+            poster: {
+              accurateseek: '1'
+            }
+          },{
+            width: 200,
+            name: 'poster_object_accurateseek_altstring',
+            poster: {
+              accurateseek: '00:00:01'
+            }
+          }
+          ],
+          encodes:[{
+            mp4: [
+              {'-vcodec':'libx264'},
+              {'-acodec': 'libfaac'},
+              {'-pix_fmt': 'yuv420p'},
+              {'-q:v': '4'},
+              {'-q:a': '100'},
+              {'-threads': '0'}
+            ]
+          }]
+        },
+        files: [{
+          expand: true,
+          src: ['cappadocia.mp4'],
+          cwd: 'test/assets/',
+          dest: 'tmp/poster_options/'
+        }],
+      }
+    },
+
+    // Unit tests.
+    nodeunit: {
+      tests: ['test/*_test.js'],
+    },
+
+  });
+
+  // Actually load this plugin's task(s).
+  grunt.loadTasks('tasks');
+
+  // These plugins provide necessary tasks.
+  grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-contrib-clean');
+  grunt.loadNpmTasks('grunt-contrib-nodeunit');
+
+  // Whenever the "test" task is run, first clean the "tmp" dir, then run this
+  // plugin's task(s), then test the result.
+  grunt.registerTask('test', ['clean', 'responsive_videos', 'nodeunit']);
+
+  // By default, lint and run all tests.
+  grunt.registerTask('default', ['jshint', 'test']);
+}</pre></li>
+    <li>example usage<pre class="apidocCodePre">n/a</pre></li>
+    </ul>
+
+
+</div>
+
+<div class="apidocFooterDiv">
+    [ this document was created with
+    <a href="https://github.com/kaizhu256/node-utility2" target="_blank">utility2</a>
+    ]
+</div>
+</div>
+</body></html>
